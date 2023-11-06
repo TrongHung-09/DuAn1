@@ -26,25 +26,28 @@ public class DanhMucFrame extends javax.swing.JFrame {
     private Integer currentPage = 1;
     private Integer rowCountPage = 5;
     private Integer totalPage;
-    private List<DanhMuc> list = danhMucService.getAll();
+    private List<DanhMuc> list = new ArrayList<>();
 
     public DanhMucFrame() {
         initComponents();
+        // Giao diện
         setSize(825, 530);
         setResizable(true);
         setLocationRelativeTo(null);
+        list = danhMucService.getAll();
         setTotalPage();
         dtm = (DefaultTableModel) tblDanhMuc.getModel();
-        loadData(danhMucService.getAll(), currentPage);
+        loadData(list, currentPage);
     }
 
     private void setTotalPage() {
-        int totalItem = danhMucService.getAll().size();
+        int totalItem= list.size();
         if (totalItem % rowCountPage != 0) {
             totalPage = (totalItem / rowCountPage) + 1;
         } else {
             totalPage = totalItem / rowCountPage;
         }
+        lblPage.setText("Trang " + currentPage + "/" + totalPage);
     }
 
     private void loadData(List<DanhMuc> list, int page) {
@@ -288,12 +291,13 @@ public class DanhMucFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         String search = txtSearch.getText().toLowerCase();
         List<DanhMuc> searchList = new ArrayList<>();
-        totalPage = searchList.size();
         for (DanhMuc danhMuc : danhMucService.getAll()) {
             if (danhMuc.getId().toLowerCase().contains(search) || danhMuc.getName().toLowerCase().contains(search)) {
                 searchList.add(danhMuc);
             }
         }
+        list = searchList;
+        setTotalPage();
         loadData(searchList, currentPage);
     }//GEN-LAST:event_btnSearchActionPerformed
 
@@ -301,10 +305,10 @@ public class DanhMucFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (currentPage == 1) {
             currentPage = totalPage;
-            loadData(danhMucService.getAll(), currentPage);
+            loadData(list, currentPage);
         } else {
             currentPage--;
-            loadData(danhMucService.getAll(), currentPage);
+            loadData(list, currentPage);
         }
     }//GEN-LAST:event_btnPrevActionPerformed
 
@@ -312,10 +316,10 @@ public class DanhMucFrame extends javax.swing.JFrame {
         // TODO add your handling code here:
         if (currentPage == totalPage) {
             currentPage = 1;
-            loadData(danhMucService.getAll(), currentPage);
+            loadData(list, currentPage);
         } else {
             currentPage++;
-            loadData(danhMucService.getAll(), currentPage);
+            loadData(list, currentPage);
         }
     }//GEN-LAST:event_btnNextActionPerformed
 
